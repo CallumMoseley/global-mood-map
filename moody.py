@@ -3,7 +3,10 @@ import eventregistry as evr
 import datetime
 import websockets
 import json
+import threading
 from watson_developer_cloud import ToneAnalyzerV3
+from flask import Flask, request, render_template, send_from_directory
+from flask_sockets import Sockets
 
 tone_analyzer = ToneAnalyzerV3(
     username='ff55b80e-9f53-4cf3-b003-66363699e089',
@@ -13,7 +16,7 @@ tone_analyzer = ToneAnalyzerV3(
 er = evr.EventRegistry(apiKey = '6406cc8c-3747-4c02-b28b-f28362c25cbd')
 
 def searchTopic(topic):
-    def search(websocket, path):
+    def search(websocket):
         evq = evr.QueryEventsIter(conceptUri=er.getConceptUri(topic))
         evq.addRequestedResult(evr.RequestEventsInfo(sortBy = 'date'))
         for event in evq.execQuery(er):
@@ -21,7 +24,6 @@ def searchTopic(topic):
             if event['location'] == None:
                 continue
             location = event['location']['label']['eng'] + ',', event['location']['country']['label']['eng']
-            avgSentiment = 0
             articles = 0
             arq = evr.QueryEventArticlesIter(evUri)
             avg_sentiments = {}
@@ -41,7 +43,44 @@ def searchTopic(topic):
             for i in range(5):
                 avg_sentiments[i]['score'] /= articles
             response = {'location': location, 'emotions': avg_sentiments}
+            websocket.send(response)
             print(json.dumps(response, indent=2))
     return search
 
+app = Flask(__name__)
+sockets = Sockets(app)
 
+@app.route('/', methods = ['GET'])
+def index():
+    return render_template('index.html')
+
+@app.route('/<path:path>')
+def send_html(path):
+    return send_from_directory('html', path)
+
+@app.route('/js/<path:path>')
+def send_js(path):
+    return send_from_directory('js', path)
+
+@app.route('/css/<path:path>')
+def send_css(path):
+    return send_from_directory('css', path)
+
+@app.route('/img/<path:path>')
+def send_img(path):
+    return send_from_directory('img', path)
+
+@app.route('/fonts/<path:path>')
+def send_fonts(path):
+    return send_from_directory('', path)
+
+@sockets.route('/')
+def socket(ws):
+    search = ws.recieve()
+    searchFunc = searchTopic(search)
+    searchFunc(ws)
+
+from gevent import pywsgi
+from geventwebsocket.handler import WebSocketHandler
+server = pywsgi.WSGIServer(('', 5000), app, handler_class=WebSocketHandler)
+server.serve_forever()
