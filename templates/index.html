@@ -56,11 +56,20 @@
         <div class="main-menu">
             <ul id="side-main-menu" class="side-menu list-unstyled">
                 <li class="active"> 
-                  <input type="text" name="name" id="uniqueID"/>
+                    <form>
+                        <br>
+                        <input type="text" name="firstname">
+                        <br>
+                        <input type="button" value="Go" id="thing" onclick="myFunction()">
+                    </form> 
+
                 <script>
                     function myFunction() {
-                        var nameValue = document.getElementById("uniqueID").value;
-                    }   
+                        var nameValue = document.getElementById("thing").value;
+                        webSocket = new WebSocket("ws://10.103.231.255:80/search");
+                        webSocket.send(nameValue);
+                        console.log(nameValue);
+                    }
                 </script>
                 </li>
             </ul>
@@ -195,7 +204,7 @@
                     addMarker(feature);
                 };
             }
-            google.maps.event.addDomListener(window, "load", initialize);
+            //google.maps.event.addDomListener(window, "load", initialize);
 
 
         </script>
