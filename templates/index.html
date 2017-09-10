@@ -402,7 +402,7 @@
                         maxScore = emotionArr[i].score;
                     }
                 }
-                id = emotion.id;
+                id = emotion.tone_id;
             }
 
             function initMap() {
@@ -415,37 +415,37 @@
                 });
             };
 
-            var icons = [
-                anger = {
+            var icons = {
+                'anger': {
                     url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
                 },
-                disgust = {
+                'disgust': {
                     url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
                 },
-                fear = {
+                'fear': {
                     url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
                 },
-                joy = {
+                'joy': {
                     url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
                 },
-                sadness = {
+                'sadness': {
                     url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
-                }]
+                }};
 
 
 
