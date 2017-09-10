@@ -29,9 +29,6 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-
-
-
     <style>
         /* Always set the map height explicitly to define the size of the div
          * element that contains the map. */
@@ -45,9 +42,6 @@
             padding: 0;
         }
     </style>
-
-
-
 
 </head>
 <body>
@@ -109,10 +103,11 @@
             var map;
             var nameValue;
             var infowindow;
-            var location;
+            var loc;
             var emotionArr;
             var emotion;
             var articleArr;
+            var id;
 
             function mostEmo(){
                 var maxScore = 0;
@@ -122,6 +117,7 @@
                         maxScore = emotionArr[i].score;
                     }
                 }
+                id = emotion.id;
             }
 
             function initMap() {
@@ -176,32 +172,31 @@
                     webSocket.send(nameValue);
                 };
                 webSocket.onmessage = function(message) {
-                    console.log(message);
-                    var data = JSON.parse(message);
+                    var data = JSON.parse(message.data);
 
-                    location = data.location;
-                    emotionArr = data.emotion;
-                    articleArr = data.article;
-
+                    loc = data.location;
+                    loc = loc[0] + loc[1];
+                    console.log(loc)
+                    emotionArr = data.emotions;
+                    articleArr = data.articles;
 
                     // Getting location
-                    nameValue.replace(' ','+');
-                    var s = "http://maps.google.com/maps/api/geocode/json?address=" + nameValue;
+                    loc = loc.replace(/ /g,'+');
+                    var s = "http://maps.google.com/maps/api/geocode/json?address=" + loc;
 
                     console.log(s);
 
-                    $.get(s, function( locationData ) {
-                        var latZ = locationData.results.geometry.location.lat;
-                        var lngZ = locationData.results.geometry.location.lng;
+                    $.get(s, function( locData ) {
+                        var latZ = locData.results[0].geometry.location.lat;
+                        var lngZ = locData.results[0].geometry.location.lng;
 
                         console.log (latZ);
                         console.log (lngZ);
 
-
                         var links = '<div id="content">'+
                                 '<div id="siteNotice">'+
                                 '</div>'+
-                                '<h1 id="firstHeading" class="firstHeading">' + location.toString() + '</h1>';
+                                '<h1 id="firstHeading" class="firstHeading">' + loc.toString() + '</h1>';
 
                         for (i = 0; i < articleArr.length; i++){
                             links += '<h3>' + '<a href=' + articleArr[i].link + '>' + articleArr[i].title + '</a></h3>' +
@@ -212,21 +207,27 @@
 
 
                         function addMarker() {
+                            mostEmo();
                             var marker = new google.maps.Marker({
-                                position: {lat: lat, lng: lng}, // MIGHT BE BLAZED AF
+                                position: {lat: latZ, lng: lngZ},
                                 icon: icons[id],
                                 map: map,
 
                             });
+                            var content = links;
                             google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
                                 return function(evt) {
-                                    infowindow.setContent(links);
+                                    infowindow.setContent(content);
                                     infowindow.open(map, marker);
                                 };
-                            })(marker, links, infowindow));
+                            })(marker, content, infowindow));
 
                         }
+
+                        //for (var i = 0, feature; feature = features[i]; i++) {
                         addMarker();
+                        //};
+
                     });
 
                 };
@@ -241,7 +242,13 @@
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrVXPuu6gxmw1s70jv1xD5MlgkR0Duj5k&callback=initMap">
         </script>
 
-
+        <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
+        <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
+        <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
+        <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
+        <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
+        <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
+        <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX-->
 
     </section>
 </div>
