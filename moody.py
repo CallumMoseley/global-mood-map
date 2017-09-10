@@ -43,8 +43,8 @@ def searchTopic(topic):
             for i in range(5):
                 avg_sentiments[i]['score'] /= articles
             response = {'location': location, 'emotions': avg_sentiments}
-            websocket.send(response)
             print(json.dumps(response, indent=2))
+            websocket.send(json.dumps(response))
     return search
 
 app = Flask(__name__)
@@ -74,9 +74,11 @@ def send_img(path):
 def send_fonts(path):
     return send_from_directory('', path)
 
-@sockets.route('/')
+@sockets.route('/search')
 def socket(ws):
-    search = ws.recieve()
+    print('receiving socket')
+    search = ws.receive()
+    print(search)
     searchFunc = searchTopic(search)
     searchFunc(ws)
 

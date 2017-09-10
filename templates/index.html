@@ -58,17 +58,21 @@
                 <li class="active"> 
                     <form>
                         <br>
-                        <input type="text" name="firstname">
+                        <input type="text" name="firstname" id="thing">
                         <br>
-                        <input type="button" value="Go" id="thing" onclick="myFunction()">
+                        <input type="button" value="Go" onclick="myFunction()">
                     </form> 
 
                 <script>
                     function myFunction() {
                         var nameValue = document.getElementById("thing").value;
-                        webSocket = new WebSocket("ws://10.103.231.255:80/search");
-                        webSocket.send(nameValue);
-                        console.log(nameValue);
+                        var webSocket = new WebSocket("ws://localhost:5000/search");
+                        webSocket.onopen = function(event) {
+                            webSocket.send(nameValue);
+                        };
+                        webSocket.onmessage = function(data) {
+                            console.log(data);
+                        };
                     }
                 </script>
                 </li>
