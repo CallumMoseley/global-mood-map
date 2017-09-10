@@ -27,7 +27,12 @@
     <!-- Tweaks for older IEs--><!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+    
+    <!-- For jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- For jRange http://nitinhayaran.github.io/jRange/demo/ -->
+    <link rel="stylesheet" href="jquery.range.css">
+    <script src="jquery.range.js"></script>
 
     <style>
         /* Always set the map height explicitly to define the size of the div
@@ -52,11 +57,14 @@
         <div class="main-menu">
             <ul id="side-main-menu" class="side-menu list-unstyled">
                 <li class="active">
-                    <form>
                         <br>
                         <input type="text" name="firstname" id="thing">
                         <br>
                         <input type="button" value="Go" onclick="buttonPress()">
+                </li>
+                <li class="active">
+                    <form>
+                        <input type="hidden" class="slider-input" value="23" />
                     </form>
                 </li>
             </ul>
@@ -163,10 +171,14 @@
             };
             };
 
+
+
+
+
             function buttonPress() {
                 nameValue = document.getElementById("thing").value;
                 document.getElementById("thing").value = "";
-                var webSocket = new WebSocket("ws://localhost:5000/search");
+                var webSocket = new WebSocket("ws://moodymap.net/search");
                 webSocket.onopen = function(event) {
                     webSocket.send(nameValue);
                 };
@@ -180,8 +192,8 @@
                     articleArr = data.articles;
 
                     // Getting location
-                    loc = loc.replace(/ /g,'+');
-                    var s = "http://maps.google.com/maps/api/geocode/json?address=" + loc;
+                    loc1 = loc.replace(/ /g,'+');
+                    var s = "http://maps.google.com/maps/api/geocode/json?address=" + loc1;
 
                     console.log(s);
 
@@ -192,14 +204,11 @@
                         console.log (latZ);
                         console.log (lngZ);
 
-                        var links = '<div id="content">'+
-                                '<div id="siteNotice">'+
-                                '</div>'+
-                                '<h1 id="firstHeading" class="firstHeading">' + loc.toString() + '</h1>';
+                        var links = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">' + loc.toString() + '</h1>'; 
 
                         for (i = 0; i < articleArr.length; i++){
-                            links += '<h3>' + '<a href=' + articleArr[i].link + '>' + articleArr[i].title + '</a></h3>' +
-                            '<img src="http://s3.favim.com/orig/40/bike-photography-place-places-pretty-Favim.com-335766.jpg" alt="description" width="200px">'
+                            links += '<h3>' + '<a href=' + articleArr[i].link + '>' + articleArr[i].title + '</a></h3>'; 
+                            // + '<img src="http://s3.favim.com/orig/40/bike-photography-place-places-pretty-Favim.com-335766.jpg" alt="description" width="200px">'  WE CAN ADD PHOTOS HERE
                         }
 
                         infowindow = new google.maps.InfoWindow();
@@ -220,17 +229,10 @@
                                     infowindow.open(map, marker);
                                 };
                             })(marker, content, infowindow));
-
                         }
-
-                        //for (var i = 0, feature; feature = features[i]; i++) {
                         addMarker();
-                        //};
-
                     });
-
                 };
-
             }
             //google.maps.event.addDomListener(window, "load", initialize);
 
