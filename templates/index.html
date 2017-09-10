@@ -54,16 +54,16 @@
 <!-- Side Navbar -->
 <nav class="side-navbar">
     <div class="side-navbar-wrapper">
-        
+
         <div class="main-menu">
             <ul id="side-main-menu" class="side-menu list-unstyled">
-                <li class="active"> 
+                <li class="active">
                     <form>
                         <br>
                         <input type="text" name="firstname" id="thing">
                         <br>
                         <input type="button" value="Go" onclick="buttonPress()">
-                    </form> 
+                    </form>
                 </li>
             </ul>
         </div>
@@ -104,7 +104,7 @@
 
         <div id="map"></div>
         <script>
-        
+
             // message is the var from Callum
             var map;
             var nameValue;
@@ -124,7 +124,7 @@
                 }
             }
 
-                function initMap() {
+            function initMap() {
                 map = new google.maps.Map(document.getElementById('map'), {
                     zoom: 3,
                     backgroundColor: '#000000',
@@ -134,110 +134,108 @@
                 });
             };
 
+            var icons = [
+                anger = {
+                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    //origin: new google.maps.Point(0,0), // origin
+                    //anchor: new google.maps.Point(0, 0) // anchor
+                },
+                disgust = {
+                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    //origin: new google.maps.Point(0,0), // origin
+                    //anchor: new google.maps.Point(0, 0) // anchor
+                },
+                fear = {
+                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    //origin: new google.maps.Point(0,0), // origin
+                    //anchor: new google.maps.Point(0, 0) // anchor
+                },
+                joy = {
+                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    //origin: new google.maps.Point(0,0), // origin
+                    //anchor: new google.maps.Point(0, 0) // anchor
+                },
+                sadness = {
+                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    //origin: new google.maps.Point(0,0), // origin
+                    //anchor: new google.maps.Point(0, 0) // anchor
+                }]
+
+
+
             function buttonPress() {
-                        nameValue = document.getElementById("thing").value;
-                        document.getElementById("thing").value = "";
-                        var webSocket = new WebSocket("ws://localhost:5000/search");
-                        webSocket.onopen = function(event) {
-                            webSocket.send(nameValue);
-                        };
-                        webSocket.onmessage = function(message) {
-                            console.log(message);
-                            var data = JSON.parse(message);
+                nameValue = document.getElementById("thing").value;
+                document.getElementById("thing").value = "";
+                var webSocket = new WebSocket("ws://localhost:5000/search");
+                webSocket.onopen = function(event) {
+                    webSocket.send(nameValue);
+                };
+                webSocket.onmessage = function(message) {
+                    console.log(message);
+                    var data = JSON.parse(message);
 
-                            location = data.location;
-                            emotionArr = data.emotion; 
-                            articleArr = data.article;
+                    location = data.location;
+                    emotionArr = data.emotion;
+                    articleArr = data.article;
 
 
-                var icons = [
-                    anger = {
-                        url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                        scaledSize: new google.maps.Size(25, 25), // scaled size
-                        //origin: new google.maps.Point(0,0), // origin
-                        //anchor: new google.maps.Point(0, 0) // anchor
-                    },
-                    disgust = {
-                        url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                        scaledSize: new google.maps.Size(25, 25), // scaled size
-                        //origin: new google.maps.Point(0,0), // origin
-                        //anchor: new google.maps.Point(0, 0) // anchor
-                    },
-                    fear = {
-                        url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                        scaledSize: new google.maps.Size(25, 25), // scaled size
-                        //origin: new google.maps.Point(0,0), // origin
-                        //anchor: new google.maps.Point(0, 0) // anchor
-                    },
-                    joy = {
-                        url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                        scaledSize: new google.maps.Size(25, 25), // scaled size
-                        //origin: new google.maps.Point(0,0), // origin
-                        //anchor: new google.maps.Point(0, 0) // anchor
-                    },
-                    sadness = {
-                        url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
-                        scaledSize: new google.maps.Size(25, 25), // scaled size
-                        //origin: new google.maps.Point(0,0), // origin
-                        //anchor: new google.maps.Point(0, 0) // anchor
-                    }]
+                    // Getting location
+                    nameValue.replace(' ','+');
+                    var s = "http://maps.google.com/maps/api/geocode/json?address=" + nameValue;
 
-                // Getting location
-                nameValue.replace(' ',+);
-                var s = "http://maps.google.com/maps/api/geocode/json?address=" + nameValue;
-
-                console.log(s);
+                    console.log(s);
 
                     $.get(s, function( locationData ) {
-                      $( ".result" ).html( locationData );
+                        var latZ = locationData.results.geometry.location.lat;
+                        var lngZ = locationData.results.geometry.location.lng;
 
-                      var lat = locationData.results.geometry.location.lat;
-                      var lng = locationData.results.geometry.location.lng;
-
-                      console.log (lat);
-                      console.log (lng);
+                        console.log (latZ);
+                        console.log (lngZ);
 
 
-                      var links = '<div id="content">'+
-                        '<div id="siteNotice">'+
-                        '</div>'+
-                        '<h1 id="firstHeading" class="firstHeading">' + location.toString() + '</h1>';
+                        var links = '<div id="content">'+
+                                '<div id="siteNotice">'+
+                                '</div>'+
+                                '<h1 id="firstHeading" class="firstHeading">' + location.toString() + '</h1>';
 
                         for (i = 0; i < articleArr.length; i++){
-                            links += '<h3>' + '<a href=' + articleArr[i].link + '>' + articleArr[i].title '</a></h3>' + 
-                        '<img src="http://s3.favim.com/orig/40/bike-photography-place-places-pretty-Favim.com-335766.jpg" alt="description" width="200px">'
+                            links += '<h3>' + '<a href=' + articleArr[i].link + '>' + articleArr[i].title + '</a></h3>' +
+                            '<img src="http://s3.favim.com/orig/40/bike-photography-place-places-pretty-Favim.com-335766.jpg" alt="description" width="200px">'
                         }
-
 
                         infowindow = new google.maps.InfoWindow();
 
 
                         function addMarker() {
-                        var marker = new google.maps.Marker({
-                            position: {lat: lat, lng: lng}, // MIGHT BE BLAZED AF
-                            icon: icons[id],
-                            map: map,
+                            var marker = new google.maps.Marker({
+                                position: {lat: lat, lng: lng}, // MIGHT BE BLAZED AF
+                                icon: icons[id],
+                                map: map,
 
-                        });
-                        var content = links;
-                        google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
-                            return function(evt) {
-                                infowindow.setContent(content);
-                                infowindow.open(map, marker);
-                            };
-                        })(marker, content, infowindow));
+                            });
+                            var content = links;
+                            google.maps.event.addListener(marker, 'click', (function(marker, content, infowindow) {
+                                return function(evt) {
+                                    infowindow.setContent(content);
+                                    infowindow.open(map, marker);
+                                };
+                            })(marker, content, infowindow));
 
-                    }
+                        }
 
-                    for (var i = 0, feature; feature = features[i]; i++) {
-                        addMarker(feature);
-                    };
+                        for (var i = 0, feature; feature = features[i]; i++) {
+                            addMarker(feature);
+                        };
 
                     });
 
-                        };
-                }
-                
+                };
+
             }
             //google.maps.event.addDomListener(window, "load", initialize);
 
