@@ -139,31 +139,31 @@
                 });
                 icons = {
                 'anger': {
-                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    url: "img/anger.png", // url
                     scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
                 },
                 'disgust': {
-                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    url: "img/surprised.png", // url
                     scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
                 },
                 'fear': {
-                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    url: "img/fear.png", // url
                     scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
                 },
                 'joy': {
-                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    url: "img/happy.png", // url
                     scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
                 },
                 'sadness': {
-                    url: "http://www.emoji.co.uk/files/twitter-emojis/smileys-people-twitter/10492-winking-face.png", // url
+                    url: "img/sad.png", // url
                     scaledSize: new google.maps.Size(25, 25) // scaled size
                     //origin: new google.maps.Point(0,0), // origin
                     //anchor: new google.maps.Point(0, 0) // anchor
@@ -205,9 +205,8 @@
                         console.log (lngZ);
 
                         var links = '<div id="content">' + '<div id="siteNotice">' + '</div>' + '<h1 id="firstHeading" class="firstHeading">' + loc.toString() + '</h1>'; 
-
                         for (i = 0; i < articleArr.length; i++){
-                            links += '<h3>' + '<a href=' + articleArr[i].link + '>' + articleArr[i].title + '</a></h3>'; 
+                            links += '<h3>' + '<a href="' + articleArr[i].url + '">' + articleArr[i].title + '</a></h3>'; 
                             // + '<img src="http://s3.favim.com/orig/40/bike-photography-place-places-pretty-Favim.com-335766.jpg" alt="description" width="200px">'  WE CAN ADD PHOTOS HERE
                         }
 

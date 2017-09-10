@@ -1,18 +1,21 @@
 import eventregistry as evr
+import asyncio
 import json
 from watson_developer_cloud import ToneAnalyzerV3
 from flask import Flask, render_template, send_from_directory
 from flask_sockets import Sockets
+import threading
+import time
 
 tone_analyzer = ToneAnalyzerV3(
     username='ff55b80e-9f53-4cf3-b003-66363699e089',
     password='Mx2MnLsuWluU',
     version='2016-05-19')
 
-er = evr.EventRegistry(apiKey = '6406cc8c-3747-4c02-b28b-f28362c25cbd')
+er = evr.EventRegistry(apiKey = '3a705c62-c9ae-4c4f-9b94-a0963352b8b3')
 
 def searchTopic(topic):
-    def search(websocket):
+    async def search(websocket):
         evq = evr.QueryEventsIter(conceptUri=er.getConceptUri(topic))
         evq.addRequestedResult(evr.RequestEventsInfo(sortBy = 'date'))
         for event in evq.execQuery(er):
@@ -66,11 +69,12 @@ def send_css(path):
 
 @app.route('/img/<path:path>')
 def send_img(path):
+    print('sending image from directory')
     return send_from_directory('img', path)
 
 @app.route('/fonts/<path:path>')
 def send_fonts(path):
-    return send_from_directory('', path)
+    return send_from_directory('fonts', path)
 
 @sockets.route('/search')
 def socket(ws):
@@ -78,7 +82,9 @@ def socket(ws):
     search = ws.receive()
     print(search)
     searchFunc = searchTopic(search)
-    searchFunc(ws)
+    time.sleep(5)
+    #searchFunc(ws)
+    #threading.Thread(target=searchFunc, args=(ws,))
 
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
