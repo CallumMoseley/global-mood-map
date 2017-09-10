@@ -1,11 +1,7 @@
-import asyncio
 import eventregistry as evr
-import datetime
-import websockets
 import json
-import threading
 from watson_developer_cloud import ToneAnalyzerV3
-from flask import Flask, request, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory
 from flask_sockets import Sockets
 
 tone_analyzer = ToneAnalyzerV3(
@@ -25,6 +21,7 @@ def searchTopic(topic):
                 continue
             location = event['location']['label']['eng'] + ',', event['location']['country']['label']['eng']
             articles = 0
+            article_content = []
             arq = evr.QueryEventArticlesIter(evUri)
             avg_sentiments = {}
             for article in arq.execQuery(er):
@@ -36,13 +33,14 @@ def searchTopic(topic):
                     for i in range(5):
                         avg_sentiments[i]['score'] += analysis[i]['score']
                 articles += 1
+                article_content.append({'title': article['title'], 'url': article['url']})
                 if articles >= 10:
                     break
             if articles == 0:
                 continue
             for i in range(5):
                 avg_sentiments[i]['score'] /= articles
-            response = {'location': location, 'emotions': avg_sentiments}
+            response = {'location': location, 'emotions': avg_sentiments, 'articles': article_content}
             print(json.dumps(response, indent=2))
             websocket.send(json.dumps(response))
     return search

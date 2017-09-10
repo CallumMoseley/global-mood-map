@@ -109,7 +109,7 @@
             var map;
             var nameValue;
             var infowindow;
-            var location;
+            var loc;
             var emotionArr;
             var emotion;
             var articleArr;
@@ -176,32 +176,31 @@
                     webSocket.send(nameValue);
                 };
                 webSocket.onmessage = function(message) {
-                    console.log(message);
-                    var data = JSON.parse(message);
+                    var data = JSON.parse(message.data);
 
-                    location = data.location;
-                    emotionArr = data.emotion;
-                    articleArr = data.article;
-
+                    loc = data.location;
+                    loc = loc[0] + loc[1];
+                    console.log(loc)
+                    emotionArr = data.emotions;
+                    articleArr = data.articles;
 
                     // Getting location
-                    nameValue.replace(' ','+');
-                    var s = "http://maps.google.com/maps/api/geocode/json?address=" + nameValue;
+                    loc = loc.replace(/ /g,'+');
+                    var s = "http://maps.google.com/maps/api/geocode/json?address=" + loc;
 
                     console.log(s);
 
-                    $.get(s, function( locationData ) {
-                        var latZ = locationData.results.geometry.location.lat;
-                        var lngZ = locationData.results.geometry.location.lng;
+                    $.get(s, function( locData ) {
+                        var latZ = locData.results[0].geometry.location.lat;
+                        var lngZ = locData.results[0].geometry.location.lng;
 
                         console.log (latZ);
                         console.log (lngZ);
 
-
                         var links = '<div id="content">'+
                                 '<div id="siteNotice">'+
                                 '</div>'+
-                                '<h1 id="firstHeading" class="firstHeading">' + location.toString() + '</h1>';
+                                '<h1 id="firstHeading" class="firstHeading">' + loc.toString() + '</h1>';
 
                         for (i = 0; i < articleArr.length; i++){
                             links += '<h3>' + '<a href=' + articleArr[i].link + '>' + articleArr[i].title + '</a></h3>' +
@@ -213,7 +212,7 @@
 
                         function addMarker() {
                             var marker = new google.maps.Marker({
-                                position: {lat: lat, lng: lng}, // MIGHT BE BLAZED AF
+                                position: {lat: latZ, lng: lngZ}, // MIGHT BE BLAZED AF
                                 icon: icons[id],
                                 map: map,
 
@@ -228,9 +227,9 @@
 
                         }
 
-                        for (var i = 0, feature; feature = features[i]; i++) {
-                            addMarker(feature);
-                        };
+                        //for (var i = 0, feature; feature = features[i]; i++) {
+                        addMarker();
+                        //};
 
                     });
 
